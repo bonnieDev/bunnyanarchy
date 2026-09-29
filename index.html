@@ -85,6 +85,8 @@ nav{
   text-transform:uppercase;
 }
 .hero h1 .pink{color:var(--pink)}
+.hero h1 .fluff{display:inline-block;padding:0 .08em;filter:url(#ba-fur)}
+@media(max-width:640px){.hero h1 .fluff{filter:url(#ba-fur-sm)}}
 .hero .tag{
   margin:1.6rem auto 0;max-width:34ch;
   font-family:var(--body);font-weight:400;
@@ -142,11 +144,30 @@ nav{
 .price{display:block;font-family:var(--marker);color:var(--pink);font-size:1.2rem;margin-bottom:.9rem}
 .buy-btn{display:inline-block;text-decoration:none;font-family:var(--display);text-transform:uppercase;letter-spacing:.05em;background:var(--pink);color:var(--ink);padding:.7rem 1.4rem;border:2px solid var(--pink);transition:background .15s,color .15s}
 .buy-btn:hover{background:transparent;color:var(--pink)}
+/* Shopify buy button — compact quantity inputs */
+.buy-slot .shopify-buy__quantity-container,
+.buy-slot .shopify-buy__quantity{
+  margin-bottom:10px !important;
+}
+.buy-slot input.shopify-buy__quantity,
+.buy-slot .shopify-buy__quantity{
+  font-size:13px !important;
+  width:48px !important;
+  min-width:48px !important;
+  max-width:56px !important;
+  height:32px !important;
+  padding:4px 6px !important;
+  box-sizing:border-box !important;
+}
+.buy-slot .shopify-buy__btn{
+  font-size:14px !important;
+  padding:10px 18px !important;
+}
 
 /* ---------- WAVE DIVIDER ---------- */
 .wave{display:block;width:100%;height:70px}
 
-/* ---------- MANIFESTO ---------- */
+/* ---------- ABOUT ---------- */
 .manifesto{
   background:var(--bone);color:var(--ink);
   padding:5rem 1.2rem;
@@ -162,6 +183,9 @@ nav{
 }
 .manifesto h2 em{font-style:normal;background:var(--pink);color:var(--bone);padding:0 .3rem}
 .manifesto p{font-size:1.05rem;line-height:1.75;margin-bottom:1.1rem;max-width:64ch}
+.manifesto h2.callout{font-size:clamp(1.7rem,4.4vw,2.8rem);line-height:1.12}
+.manifesto h2.callout em{box-decoration-break:clone;-webkit-box-decoration-break:clone}
+.manifesto h3.artist{font-family:var(--display);text-transform:uppercase;font-weight:400;font-size:clamp(1.4rem,3.4vw,2rem);letter-spacing:.02em;color:var(--pink);margin:2.4rem 0 1rem}
 .banksy-note{
   display:inline-block;margin-top:2.2rem;
   font-family:var(--marker);font-size:1.05rem;
@@ -281,6 +305,9 @@ footer small{display:block;opacity:.6;font-size:.8rem;line-height:1.7}
   .card,.track{transition:none}
 }
 </style>
+<link rel="stylesheet" href="game/game.css">
+<script defer src="game/launcher.js"></script>
+<script defer src="reggie-intro.js"></script>
 </head>
 <body>
 
@@ -291,7 +318,7 @@ footer small{display:block;opacity:.6;font-size:.8rem;line-height:1.7}
   </a>
   <ul class="nav-links">
     <li><a href="#drop">The Drop</a></li>
-    <li><a href="#manifesto">Manifesto</a></li>
+    <li><a href="#about">About</a></li>
     <li><a href="#characters">Characters</a></li>
   </ul>
 </nav>
@@ -309,7 +336,50 @@ footer small{display:block;opacity:.6;font-size:.8rem;line-height:1.7}
   <span class="sticker st-fite">FITE THEM!</span>
   <span class="sticker st-bolt">⚡ cute but dangerous</span>
 
-  <h1>BUNNY<br><span class="pink">ANARCHY</span></h1>
+  <h1><span class="fluff">BUNNY</span><br><span class="pink">ANARCHY</span></h1>
+  <!-- Fur filter for "BUNNY": noise frays the edges into strands + soft fibrous shading -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <filter id="ba-fur" x="-15%" y="-40%" width="130%" height="180%" color-interpolation-filters="sRGB">
+      <feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="11" result="fine"/>
+      <feTurbulence type="fractalNoise" baseFrequency=".09" numOctaves="2" seed="3" result="wave"/>
+      <feTurbulence type="fractalNoise" baseFrequency=".02" numOctaves="2" seed="4" result="cloud"/>
+      <!-- soft glow: the puff around the tail -->
+      <feGaussianBlur in="SourceAlpha" stdDeviation="4" result="g"/>
+      <feColorMatrix in="g" type="matrix" values="0 0 0 0 1 0 0 0 0 .97 0 0 0 0 .95 0 0 0 .4 0" result="glow"/>
+      <!-- fur fringe: short fine hairs off every edge -->
+      <feGaussianBlur in="SourceAlpha" stdDeviation="1.6" result="a"/>
+      <feDisplacementMap in="a" in2="fine" scale="8" xChannelSelector="R" yChannelSelector="G" result="hairs"/>
+      <feColorMatrix in="hairs" type="matrix" values="0 0 0 0 .98 0 0 0 0 .96 0 0 0 0 .94 0 0 0 1.5 -.3" result="fringe"/>
+      <!-- core letters: gently puffy, not blobby -->
+      <feDisplacementMap in="SourceGraphic" in2="wave" scale="5" xChannelSelector="R" yChannelSelector="G" result="w"/>
+      <feGaussianBlur in="w" stdDeviation=".5" result="core"/>
+      <!-- subtle cloudy shading -->
+      <feColorMatrix in="cloud" type="matrix" values="0 0 0 0 .86 0 0 0 0 .83 0 0 0 0 .84 0 0 0 -.8 .38" result="shade"/>
+      <feMerge result="puff"><feMergeNode in="fringe"/><feMergeNode in="core"/></feMerge>
+      <feComposite in="shade" in2="puff" operator="in" result="shadeIn"/>
+      <feMerge><feMergeNode in="glow"/><feMergeNode in="puff"/><feMergeNode in="shadeIn"/></feMerge>
+    </filter>
+    <filter id="ba-fur-sm" x="-15%" y="-40%" width="130%" height="180%" color-interpolation-filters="sRGB">
+      <feTurbulence type="fractalNoise" baseFrequency="1.4" numOctaves="2" seed="11" result="fine"/>
+      <feTurbulence type="fractalNoise" baseFrequency=".18" numOctaves="2" seed="3" result="wave"/>
+      <feTurbulence type="fractalNoise" baseFrequency=".02" numOctaves="2" seed="4" result="cloud"/>
+      <!-- soft glow: the puff around the tail -->
+      <feGaussianBlur in="SourceAlpha" stdDeviation="2" result="g"/>
+      <feColorMatrix in="g" type="matrix" values="0 0 0 0 1 0 0 0 0 .97 0 0 0 0 .95 0 0 0 .4 0" result="glow"/>
+      <!-- fur fringe: short fine hairs off every edge -->
+      <feGaussianBlur in="SourceAlpha" stdDeviation=".8" result="a"/>
+      <feDisplacementMap in="a" in2="fine" scale="3.5" xChannelSelector="R" yChannelSelector="G" result="hairs"/>
+      <feColorMatrix in="hairs" type="matrix" values="0 0 0 0 .98 0 0 0 0 .96 0 0 0 0 .94 0 0 0 1.5 -.3" result="fringe"/>
+      <!-- core letters: gently puffy, not blobby -->
+      <feDisplacementMap in="SourceGraphic" in2="wave" scale="2" xChannelSelector="R" yChannelSelector="G" result="w"/>
+      <feGaussianBlur in="w" stdDeviation=".3" result="core"/>
+      <!-- subtle cloudy shading -->
+      <feColorMatrix in="cloud" type="matrix" values="0 0 0 0 .86 0 0 0 0 .83 0 0 0 0 .84 0 0 0 -.8 .38" result="shade"/>
+      <feMerge result="puff"><feMergeNode in="fringe"/><feMergeNode in="core"/></feMerge>
+      <feComposite in="shade" in2="puff" operator="in" result="shadeIn"/>
+      <feMerge><feMergeNode in="glow"/><feMergeNode in="puff"/><feMergeNode in="shadeIn"/></feMerge>
+    </filter>
+  </svg>
   <p class="tag">You should smile more.</p>
 
 </header>
@@ -320,6 +390,40 @@ footer small{display:block;opacity:.6;font-size:.8rem;line-height:1.7}
     <span class="eyebrow">Today Only</span>
     <h2>The Drop</h2>
     <p class="drop-note">Four pieces. One day. When they're gone, they're gone.</p>
+  </div>
+  <div class="ba-arcade" aria-label="Bunny Anarcade">
+    <div class="ba-top">
+      <div><h3>BUNNY ANARCADE</h3><p class="ba-version">SYS.ANARCHY // V.1.0.8</p></div>
+      <button type="button" data-play disabled aria-controls="ba-game-panel">[ PLAY ]</button>
+      <button type="button" data-stop hidden>EXIT / STOP THE MADNESS</button>
+    </div>
+    <div class="ba-controls"><span>← → / A D MOVE</span><span>SPACE HOP</span><span>CATCH THE DROP</span><span>ESC QUIT</span></div>
+    <p data-status role="status">OPTIONAL CHAOS. THE SHOP IS OPEN.</p>
+    <noscript><p>Enable JavaScript to play. Products are below.</p></noscript>
+    <div id="ba-game-panel" data-panel hidden tabindex="0" role="region" aria-label="Rabbit game. Catch the falling merch. Left and right arrows or A and D to move, space to hop, Escape to quit.">
+      <div class="ba-stage">
+        <div data-canvas></div>
+        <div class="ba-hud" aria-hidden="true">
+          <span>SCORE <b data-score>0</b></span>
+          <span>STREAK <b data-streak>0</b></span>
+          <span class="ba-lives" data-lives>♥♥♥</span>
+        </div>
+        <div class="ba-over" data-over hidden role="group" aria-labelledby="ba-over-title">
+          <h4 id="ba-over-title">WOT.</h4>
+          <p>SCORE <b data-final>0</b> · BEST <b data-best>0</b></p>
+          <p class="ba-over-note">Reggie will never let you forget this.</p>
+          <div class="ba-over-actions">
+            <button type="button" data-again>PLAY AGAIN</button>
+            <button type="button" data-shop>SHOP THE DROP</button>
+          </div>
+        </div>
+      </div>
+      <div class="ba-touch" aria-label="Game controls">
+        <button type="button" data-control="left" aria-label="Move left">←</button>
+        <button type="button" data-control="hop">HOP</button>
+        <button type="button" data-control="right" aria-label="Move right">→</button>
+      </div>
+    </div>
   </div>
   <div class="drop-grid">
     <div class="prod">
@@ -389,9 +493,13 @@ footer small{display:block;opacity:.6;font-size:.8rem;line-height:1.7}
               "padding-right": "50px"
             },
             "quantityInput": {
-              "font-size": "16px",
-              "padding-top": "16px",
-              "padding-bottom": "16px"
+              "font-size": "13px",
+              "padding-top": "6px",
+              "padding-bottom": "6px",
+              "padding-left": "8px",
+              "padding-right": "8px",
+              "width": "48px",
+              "margin-bottom": "10px"
             },
             "price": {
               "color": "#ff4e00"
@@ -459,9 +567,13 @@ footer small{display:block;opacity:.6;font-size:.8rem;line-height:1.7}
               "padding-right": "50px"
             },
             "quantityInput": {
-              "font-size": "16px",
-              "padding-top": "16px",
-              "padding-bottom": "16px"
+              "font-size": "13px",
+              "padding-top": "6px",
+              "padding-bottom": "6px",
+              "padding-left": "8px",
+              "padding-right": "8px",
+              "width": "48px",
+              "margin-bottom": "10px"
             },
             "title": {
               "font-family": "Helvetica Neue, sans-serif",
@@ -618,9 +730,13 @@ footer small{display:block;opacity:.6;font-size:.8rem;line-height:1.7}
               "padding-right": "50px"
             },
             "quantityInput": {
-              "font-size": "16px",
-              "padding-top": "16px",
-              "padding-bottom": "16px"
+              "font-size": "13px",
+              "padding-top": "6px",
+              "padding-bottom": "6px",
+              "padding-left": "8px",
+              "padding-right": "8px",
+              "width": "48px",
+              "margin-bottom": "10px"
             },
             "price": {
               "color": "#ff4e00"
@@ -688,9 +804,13 @@ footer small{display:block;opacity:.6;font-size:.8rem;line-height:1.7}
               "padding-right": "50px"
             },
             "quantityInput": {
-              "font-size": "16px",
-              "padding-top": "16px",
-              "padding-bottom": "16px"
+              "font-size": "13px",
+              "padding-top": "6px",
+              "padding-bottom": "6px",
+              "padding-left": "8px",
+              "padding-right": "8px",
+              "width": "48px",
+              "margin-bottom": "10px"
             },
             "title": {
               "font-family": "Helvetica Neue, sans-serif",
@@ -847,9 +967,13 @@ footer small{display:block;opacity:.6;font-size:.8rem;line-height:1.7}
               "padding-right": "50px"
             },
             "quantityInput": {
-              "font-size": "16px",
-              "padding-top": "16px",
-              "padding-bottom": "16px"
+              "font-size": "13px",
+              "padding-top": "6px",
+              "padding-bottom": "6px",
+              "padding-left": "8px",
+              "padding-right": "8px",
+              "width": "48px",
+              "margin-bottom": "10px"
             },
             "price": {
               "color": "#ff4e00"
@@ -917,9 +1041,13 @@ footer small{display:block;opacity:.6;font-size:.8rem;line-height:1.7}
               "padding-right": "50px"
             },
             "quantityInput": {
-              "font-size": "16px",
-              "padding-top": "16px",
-              "padding-bottom": "16px"
+              "font-size": "13px",
+              "padding-top": "6px",
+              "padding-bottom": "6px",
+              "padding-left": "8px",
+              "padding-right": "8px",
+              "width": "48px",
+              "margin-bottom": "10px"
             },
             "title": {
               "font-family": "Helvetica Neue, sans-serif",
@@ -1076,9 +1204,13 @@ footer small{display:block;opacity:.6;font-size:.8rem;line-height:1.7}
               "padding-right": "50px"
             },
             "quantityInput": {
-              "font-size": "16px",
-              "padding-top": "16px",
-              "padding-bottom": "16px"
+              "font-size": "13px",
+              "padding-top": "6px",
+              "padding-bottom": "6px",
+              "padding-left": "8px",
+              "padding-right": "8px",
+              "width": "48px",
+              "margin-bottom": "10px"
             },
             "price": {
               "color": "#ff4e00"
@@ -1146,9 +1278,13 @@ footer small{display:block;opacity:.6;font-size:.8rem;line-height:1.7}
               "padding-right": "50px"
             },
             "quantityInput": {
-              "font-size": "16px",
-              "padding-top": "16px",
-              "padding-bottom": "16px"
+              "font-size": "13px",
+              "padding-top": "6px",
+              "padding-bottom": "6px",
+              "padding-left": "8px",
+              "padding-right": "8px",
+              "width": "48px",
+              "margin-bottom": "10px"
             },
             "title": {
               "font-family": "Helvetica Neue, sans-serif",
@@ -1262,13 +1398,24 @@ footer small{display:block;opacity:.6;font-size:.8rem;line-height:1.7}
   <path d="M0 52 C120 17 240 87 360 52 C480 17 600 87 720 52 C840 17 960 87 1080 52 C1200 17 1320 87 1440 52 L1440 20 C1320 55 1200 -15 1080 20 C960 55 840 -15 720 20 C600 55 480 -15 360 20 C240 55 120 -15 0 20 Z" fill="#e51e59" opacity=".9"/>
 </svg>
 
-<section class="manifesto" id="manifesto">
+<section class="manifesto" id="about">
   <div class="inner">
-    <span class="eyebrow">Manifesto</span>
-    <h2>This isn't fashion. It's <em>armor with a wink.</em></h2>
-    <p>Bunny Anarchy was born from the exhaustion of being called "feminist" like it was an insult. It refuses to shrink, apologize, or play by rules written by men. It isn't anti-everything — it's anti-sexism. It makes feminism bold, loud, and yes: hot.</p>
-    <p>Every piece is a contradiction: soft and brutal, playful and prepared, cute but dangerous. The brand moves like organized anarchy — no leaders, no lore, just vibe. It isn't rebellion for rebellion's sake. It's survival wrapped in pink, a refusal to play someone else's game.</p>
-    <p class="pull">Chill rage. Glitter in the wound. Post-patriarchy glow-up.</p>
+    <span class="eyebrow">About</span>
+    <h2 class="callout">Bunny Anarchy isn’t about becoming tougher, louder, prettier, sexier, or more rebellious. <em>It’s about not becoming smaller for someone else’s comfort.</em></h2>
+    <h3 class="artist">The Artist Behind the Anarchy</h3>
+    <p>When I started my design and development career in the early 2000s, I expected the stereotypical boys’ club.</p>
+    <p>Instead, I spent more than two decades working with people who largely respected ambition, independence, competition, and speaking your mind. My male colleagues, in particular, often became some of my strongest supporters and closest friends.</p>
+    <p>Then I moved back to my rural Ohio hometown in midlife.</p>
+    <p>I had left as a quiet teenager and returned as a very different woman: educated, outspoken, career-driven, opinionated, and completely uninterested in shrinking myself back into an older version of who people remembered.</p>
+    <p>That created some friction.</p>
+    <p>I began running into expectations—from men and women alike—about how women should talk, dress, behave, age, and take up space. And I became fascinated by how easily confidence could be recast as aggression, or feminism reduced to a stereotype of being angry, humorless, masculine, or anti-men.</p>
+    <p>That wasn’t the feminism I recognized.</p>
+    <p>So I made my own visual language for it.</p>
+    <p>Bunny Anarchy is fashion, art, and controlled chaos built around the idea that empowerment does not have a dress code. It can be smart, loud, sexy, funny, ridiculous, feminine, aggressive, soft, profane, polished, or all of the above.</p>
+    <p>It isn’t anti-anyone.</p>
+    <p>It’s anti-shrinking.</p>
+    <p>For anyone who has ever been told to smile more, talk less, tone it down, or make themselves easier to handle:</p>
+    <p class="pull">Bunny Anarchy makes room.</p>
     <span class="banksy-note">I love you Banksy. Call me. &#9829;</span>
   </div>
 </section>
