@@ -26,3 +26,6 @@ bunnyanarchy (1).html
 game/package.json
 game/package-lock.json
 game/build.cjs
+
+# Cloudflare config
+wrangler.jsonc

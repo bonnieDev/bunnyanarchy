@@ -1,0 +1,9 @@
+// Cloudflare Workers config for bunnyanarchy.co (plain static site).
+// Uploads the repo folder as static assets; .assetsignore lists what to skip.
+{
+  "name": "bunnyanarchy",
+  "compatibility_date": "2026-09-29",
+  "assets": {
+    "directory": "./"
+  }
+}
