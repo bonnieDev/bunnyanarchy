@@ -1,0 +1,28 @@
+# Files Cloudflare should NOT upload when deploying bunnyanarchy.co.
+# The live site only needs index.html, reggie-intro.js and the game/ folder.
+
+# Tooling
+**/.git
+**/node_modules
+**/.DS_Store
+.gitignore
+.assetsignore
+
+# Working files: After Effects, music projects, big renders (the .mov is over the 25 MB limit)
+AE/
+Rampage/
+*.mov
+*.aep
+*.ai
+
+# Source art and old drafts — not used by the page (its images are embedded in index.html)
+*.png
+*.jpg
+*.mp4
+bunnyanarchy.html
+bunnyanarchy (1).html
+
+# Game build tooling (the site only loads game/game.bundle.js)
+game/package.json
+game/package-lock.json
+game/build.cjs
